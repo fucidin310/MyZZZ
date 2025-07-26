@@ -37,7 +37,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 - **세이브 로드**: 게임을 종료하면 자동으로 진행사항이 저장됩니다. SaveGames 폴더를 삭제하면 새 게임을 할 수 있습니다.
 
 ## 전투
-<br />
+
 [![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)
 
 <details>
@@ -161,18 +161,22 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 
 모션 워핑을 위한 구조체다.
 - DiatanceWeight, AngleWeight
+  <br />
   가장 적합한 타겟을 찾을때 필요한 가중치다.
   <br />
   예를 들어 100m 앞에 있고 카메라 방향과 45도 떨어진 적과 200m 앞에 있고 카메라 방향과 10도 떨어진 적 중 어떤 적에게 접근할지 정해야 할때, 거리 가중치와 각도 가중치의 비율을 조절한다.
   <br />
   예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다하면 거리 가중치를 0으로 둔다.
 - MaxDistance, MaxAngle
+<br />
   접근 가능한 최대 거리와 최대 각도이다.  
   <br />
   위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식한다.
 - Approch Diatance, ShouldMoveBack
+<br />
   얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값이다.
 - TargetLocationName, TargetRotaionName
+<br />
   모션워핑의 WarpTargetName이다.
 
 위에서 만든 구조체를 아래 함수에 넘겨 실행하면 모션 워핑이 적용된다.
