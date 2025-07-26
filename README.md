@@ -46,6 +46,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 <img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
 
 SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구성한다.
+
 예를 들어 방어도 50% + 공격력 70%만큼 데미지를 준다고 하자.
 그럼 Stat Modifiers를 2개 만들고
 첫번째에는 Attribute에 DefancePower, Multi Handle에 0.5를 넣어준다. 데미지의 경우에는 스킬에 레벨에 따라 변화하기 때문에 커브드 테이블을 넣도록 했다.
@@ -83,6 +84,9 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 
 그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다. 그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
 
+<details>
+<summary>UGEExecCalc_Damage::Execute_Implementation</summary>
+	
 ```
 void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
@@ -138,4 +142,6 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	}
 }
 ```
+
+</details>
 </details>
