@@ -86,7 +86,8 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 ```
 </details>
 
-그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다. 그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
+그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다.
+그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
 
 <details>
 <summary>UGEExecCalc_Damage::Execute_Implementation</summary>
