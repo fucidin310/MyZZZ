@@ -41,7 +41,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 [![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)
 
 <details>
-<summary>**데미지 로직**</summary>
+<summary>데미지 로직</summary>
 	
 <img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
 
@@ -52,8 +52,7 @@ SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구
 두번째에는 Attribute에 AttackPower, Multi Handle에 0.7를 넣어준다.
 그런다음 아래의 함수에 해당하는 구조채를 넣어둔다.
 
-<details>
-<summary>**ApplyDamageEffect**</summary>
+<summary>ApplyDamageEffect</summary>
 ```
 void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, float DamageAmount)
 {
@@ -78,11 +77,8 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 	}
 }
 ```
-</details>
-
 그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다. 그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
-<details>
-<summary>**UGEExecCalc_Damage::Execute_Implementation**</summary>
+
 ```
 void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
@@ -138,7 +134,6 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	}
 }
 ```
-</details>
 </details>
 
 - **모션 워핑 로직**
