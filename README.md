@@ -12,6 +12,15 @@
 ## 플레이용 빌드 버전
 https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive_link
 
+- **WASD**: 이동
+- **마우스 좌클릭**: 일반공격
+- **마우스 우클릭**: 회피
+- **E**: 스킬
+- **R**: 궁극기
+- **Space**: 교체
+- **ESC**: 메뉴
+- **QE**: 메뉴를 띄운 상태에서 세부 매뉴 전환
+
 ## 개발용 프로젝트 파일
 https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive_link
 
