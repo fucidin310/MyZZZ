@@ -7,9 +7,11 @@
 - **사용 엔진**: 언리얼 엔진 5.5.4
 
 ## 플레이 영상
+
 [![Video Label](http://img.youtube.com/vi/12kmY2aP2SY/0.jpg)](https://youtu.be/12kmY2aP2SY)
 
 ## 플레이용 빌드 버전
+
 https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive_link
 
 - **WASD**: 이동
@@ -22,6 +24,7 @@ https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive
 - **QE**: 메뉴를 띄운 상태에서 세부 매뉴 전환
 
 ## 개발용 프로젝트 파일
+
 https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive_link
 
 ## 프로젝트 개요
@@ -34,3 +37,209 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 - **세이브 로드**: 게임을 종료하면 자동으로 진행사항이 저장됩니다. SaveGames 폴더를 삭제하면 새 게임을 할 수 있습니다.
 
 ## 전투
+
+[![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)
+
+<details>
+<summary>**데미지 로직**</summary>
+<img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
+  
+```
+void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, float DamageAmount)
+{
+	if (!InSpecHandle.IsValid() || !TargetActor) return;
+
+	FGameplayEffectSpec* Spec = InSpecHandle.Data.Get();
+	Spec->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_BaseDamage, DamageAmount);
+
+	if (AMyZZZCharacter* TargetCharacter = Cast<AMyZZZCharacter>(TargetActor))
+	{
+		UAbilitySystemComponent* TargetAbilitySystemComponent = TargetCharacter->GetAbilitySystemComponent();
+
+		check(TargetAbilitySystemComponent && InSpecHandle.IsValid());
+
+		if (UMyAbilitySystemComponent* TargetMyAbilitySystemComponent = Cast<UMyAbilitySystemComponent>(TargetAbilitySystemComponent))
+		{
+			TargetMyAbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
+				*InSpecHandle.Data,
+				TargetAbilitySystemComponent
+			);
+		}
+	}
+}
+```
+  
+```
+void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+{
+    const FGameplayEffectSpec& EffectSpec = ExecutionParams.GetOwningSpec();
+
+    FAggregatorEvaluateParameters EvalParam;
+    EvalParam.SourceTags = EffectSpec.CapturedSourceTags.GetAggregatedTags();
+    EvalParam.TargetTags = EffectSpec.CapturedTargetTags.GetAggregatedTags();
+
+	float SourceBaseDamage = EffectSpec.GetSetByCallerMagnitude(MyGameplayTags::SetByCaller_BaseDamage, false, 0.f);
+
+	float TargetDefensePower = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetMyDamageCapture().DefensePowerDef, EvalParam, TargetDefensePower);
+
+	float SourceDamageBoost = 1.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetMyDamageCapture().DamageBoostDef, EvalParam, SourceDamageBoost);
+
+	float SourceCriticalChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetMyDamageCapture().CriticalChanceDef, EvalParam, SourceCriticalChance);
+
+	float SourceCriticalDamage = 0.f;
+
+	bool bIsCritical = false;
+	EDamageType DamageType = EDamageType::Physical;
+
+	float RandomChance = FMath::RandRange(0.0f, 100.0f);
+	if (SourceCriticalChance > RandomChance || SourceCriticalChance >= 100.f)
+	{
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetMyDamageCapture().CriticalDamageDef, EvalParam, SourceCriticalDamage);
+		bIsCritical = true;
+	}
+
+	const float FinalDamage = SourceBaseDamage * (100 / (100 + TargetDefensePower)) * (1 + (SourceCriticalDamage / 100)) * SourceDamageBoost;
+	UE_LOG(LogTemp, Warning, TEXT("%f * (100 / (100 + %f)) * (1 + (%f / 100)) * %f"), SourceBaseDamage, TargetDefensePower, SourceCriticalDamage, SourceDamageBoost);
+
+	if (FinalDamage > 0.f)
+	{
+		OutExecutionOutput.AddOutputModifier(
+			FGameplayModifierEvaluatedData(
+				GetMyDamageCapture().DamageInfoProperty,
+				EGameplayModOp::Override,
+				UMyFunctionLibrary::MakeDamageInfo(bIsCritical, DamageType)
+			)
+		);
+
+		OutExecutionOutput.AddOutputModifier(
+			FGameplayModifierEvaluatedData(
+				GetMyDamageCapture().DamageTakenProperty,
+				EGameplayModOp::Override,
+				FinalDamage
+			)
+		);
+	}
+}
+```
+</details>
+
+- **모션 워핑 로직**
+<img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
+
+```
+void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AActor* Owner, const FTargetApproachParams& TargetApproachParams)
+{
+	AMyZZZCharacter* OwnerCharacter = Cast<AMyZZZCharacter>(Owner);
+	if (!OwnerCharacter) return;
+
+	UMotionWarpingComponent* OwnerMotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
+	if (!OwnerMotionWarpingComponent) return;
+	OwnerMotionWarpingComponent->RemoveAllWarpTargets();
+
+	UWorld* World = nullptr;
+	if (GEngine) World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return;
+
+	FVector OwnerLocation = OwnerCharacter->GetActorLocation();
+
+	TArray<FHitResult> HitResults;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(Owner);
+
+	bool bHit = World->SweepMultiByProfile(
+		HitResults,
+		OwnerLocation,
+		OwnerLocation + FVector(0, 0, 100),
+		FQuat::Identity,
+		FName("PawnProfile"),
+		FCollisionShape::MakeSphere(TargetApproachParams.MaxDistance),
+		QueryParams
+	);
+
+	if (!bHit) return;
+
+	AActor* BestActor = FindBestTargetFromHits(Owner, HitResults, TargetApproachParams.DistanceWeight, TargetApproachParams.AngleWeight, TargetApproachParams.MaxDistance, TargetApproachParams.MaxAngle);
+	if (!BestActor) return;
+
+	FVector TargetLocation = BestActor->GetActorLocation();
+	OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetRotationName, TargetLocation);
+
+	FVector ToTarget = (TargetLocation - OwnerLocation);
+	if (TargetApproachParams.bShouldMoveBack || (!TargetApproachParams.bShouldMoveBack && ToTarget.Length() > TargetApproachParams.ApprochDistance))
+	{
+		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetLocationName, TargetLocation - ToTarget.GetSafeNormal() * TargetApproachParams.ApprochDistance);
+	}
+	else
+	{
+		OwnerMotionWarpingComponent->RemoveWarpTarget(TargetApproachParams.TargetLocationName);
+	}
+}
+``````
+void UMyFunctionLibrary::ApprochEnemyCenter(const UObject* WorldContextObject, AActor* Owner, const FTargetApproachParams& TargetApproachParams)
+{
+	AMyZZZCharacter* OwnerCharacter = Cast<AMyZZZCharacter>(Owner);
+	if (!OwnerCharacter) return;
+
+	UMotionWarpingComponent* OwnerMotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
+	if (!OwnerMotionWarpingComponent) return;
+	OwnerMotionWarpingComponent->RemoveAllWarpTargets();
+
+	UWorld* World = nullptr;
+	if (GEngine) World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return;
+
+	FVector OwnerLocation = OwnerCharacter->GetActorLocation();
+
+	TArray<FHitResult> TargetHits;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(Owner);
+
+	bool bHit = World->SweepMultiByProfile(
+		TargetHits,
+		OwnerLocation,
+		OwnerLocation + FVector(0, 0, 100),
+		FQuat::Identity,
+		FName("PawnProfile"),
+		FCollisionShape::MakeSphere(TargetApproachParams.MaxDistance),
+		QueryParams
+	);
+
+	if (!bHit) return;
+
+	FVector EnemyCenter = FVector::ZeroVector;
+	int EnemyNum = 0;
+
+	FRotator ControllerRotation = Cast<APawn>(Owner)->GetControlRotation();
+	ControllerRotation = FRotator(0.f, ControllerRotation.Yaw, 0.f);
+	FVector ControllerForwaed = ControllerRotation.Vector();
+
+	for (const FHitResult& TargetHit : TargetHits)
+	{
+		AActor* Target = TargetHit.GetActor();
+		if (Target == nullptr || Target == Owner) continue;
+		if (IsHostileBetween(Cast<APawn>(Target), Cast<APawn>(Owner)) == false) continue;
+
+		FVector TargetLocation = Target->GetActorLocation();
+		FVector ToTarget = (TargetLocation - OwnerLocation).GetSafeNormal();
+
+		float DotProduct = FVector::DotProduct(ControllerForwaed, ToTarget);
+		float Angle = ((DotProduct * -1) + 1) * 90.f; // 0(완전 일치) ~ 180(완전 불일치)
+		if (Angle > TargetApproachParams.MaxAngle) continue;
+
+		EnemyCenter += Target->GetActorLocation();
+		EnemyNum++;
+	}
+
+	if (EnemyNum > 0)
+	{
+		EnemyCenter /= EnemyNum;
+		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetLocationName, EnemyCenter);
+		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetRotationName, EnemyCenter);
+	}
+}
+```
