@@ -53,6 +53,7 @@ SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구
 그런다음 아래의 함수에 해당하는 구조채를 넣어둔다.
 
 <summary>ApplyDamageEffect</summary>
+
 ```
 void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, float DamageAmount)
 {
@@ -77,6 +78,7 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 	}
 }
 ```
+
 그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다. 그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
 
 ```
@@ -135,121 +137,3 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 }
 ```
 </details>
-
-- **모션 워핑 로직**
-<img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
-
-```
-void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AActor* Owner, const FTargetApproachParams& TargetApproachParams)
-{
-	AMyZZZCharacter* OwnerCharacter = Cast<AMyZZZCharacter>(Owner);
-	if (!OwnerCharacter) return;
-
-	UMotionWarpingComponent* OwnerMotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
-	if (!OwnerMotionWarpingComponent) return;
-	OwnerMotionWarpingComponent->RemoveAllWarpTargets();
-
-	UWorld* World = nullptr;
-	if (GEngine) World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
-	if (!World) return;
-
-	FVector OwnerLocation = OwnerCharacter->GetActorLocation();
-
-	TArray<FHitResult> HitResults;
-
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(Owner);
-
-	bool bHit = World->SweepMultiByProfile(
-		HitResults,
-		OwnerLocation,
-		OwnerLocation + FVector(0, 0, 100),
-		FQuat::Identity,
-		FName("PawnProfile"),
-		FCollisionShape::MakeSphere(TargetApproachParams.MaxDistance),
-		QueryParams
-	);
-
-	if (!bHit) return;
-
-	AActor* BestActor = FindBestTargetFromHits(Owner, HitResults, TargetApproachParams.DistanceWeight, TargetApproachParams.AngleWeight, TargetApproachParams.MaxDistance, TargetApproachParams.MaxAngle);
-	if (!BestActor) return;
-
-	FVector TargetLocation = BestActor->GetActorLocation();
-	OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetRotationName, TargetLocation);
-
-	FVector ToTarget = (TargetLocation - OwnerLocation);
-	if (TargetApproachParams.bShouldMoveBack || (!TargetApproachParams.bShouldMoveBack && ToTarget.Length() > TargetApproachParams.ApprochDistance))
-	{
-		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetLocationName, TargetLocation - ToTarget.GetSafeNormal() * TargetApproachParams.ApprochDistance);
-	}
-	else
-	{
-		OwnerMotionWarpingComponent->RemoveWarpTarget(TargetApproachParams.TargetLocationName);
-	}
-}
-``````
-void UMyFunctionLibrary::ApprochEnemyCenter(const UObject* WorldContextObject, AActor* Owner, const FTargetApproachParams& TargetApproachParams)
-{
-	AMyZZZCharacter* OwnerCharacter = Cast<AMyZZZCharacter>(Owner);
-	if (!OwnerCharacter) return;
-
-	UMotionWarpingComponent* OwnerMotionWarpingComponent = OwnerCharacter->GetMotionWarpingComponent();
-	if (!OwnerMotionWarpingComponent) return;
-	OwnerMotionWarpingComponent->RemoveAllWarpTargets();
-
-	UWorld* World = nullptr;
-	if (GEngine) World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
-	if (!World) return;
-
-	FVector OwnerLocation = OwnerCharacter->GetActorLocation();
-
-	TArray<FHitResult> TargetHits;
-
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(Owner);
-
-	bool bHit = World->SweepMultiByProfile(
-		TargetHits,
-		OwnerLocation,
-		OwnerLocation + FVector(0, 0, 100),
-		FQuat::Identity,
-		FName("PawnProfile"),
-		FCollisionShape::MakeSphere(TargetApproachParams.MaxDistance),
-		QueryParams
-	);
-
-	if (!bHit) return;
-
-	FVector EnemyCenter = FVector::ZeroVector;
-	int EnemyNum = 0;
-
-	FRotator ControllerRotation = Cast<APawn>(Owner)->GetControlRotation();
-	ControllerRotation = FRotator(0.f, ControllerRotation.Yaw, 0.f);
-	FVector ControllerForwaed = ControllerRotation.Vector();
-
-	for (const FHitResult& TargetHit : TargetHits)
-	{
-		AActor* Target = TargetHit.GetActor();
-		if (Target == nullptr || Target == Owner) continue;
-		if (IsHostileBetween(Cast<APawn>(Target), Cast<APawn>(Owner)) == false) continue;
-
-		FVector TargetLocation = Target->GetActorLocation();
-		FVector ToTarget = (TargetLocation - OwnerLocation).GetSafeNormal();
-
-		float DotProduct = FVector::DotProduct(ControllerForwaed, ToTarget);
-		float Angle = ((DotProduct * -1) + 1) * 90.f; // 0(완전 일치) ~ 180(완전 불일치)
-		if (Angle > TargetApproachParams.MaxAngle) continue;
-
-		EnemyCenter += Target->GetActorLocation();
-		EnemyNum++;
-	}
-
-	if (EnemyNum > 0)
-	{
-		EnemyCenter /= EnemyNum;
-		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetLocationName, EnemyCenter);
-		OwnerMotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TargetApproachParams.TargetRotationName, EnemyCenter);
-	}
-}
-```
