@@ -48,7 +48,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구성한다.
 
 예를 들어 방어도 50% + 공격력 70%만큼 데미지를 준다고 하자.
-그럼 Stat Modifiers를 2개 만들고
+그럼 Stat Modifiers를 2개 만들고,
 첫번째에는 Attribute에 DefancePower, Multi Handle에 0.5를 넣어준다. 데미지의 경우에는 스킬에 레벨에 따라 변화하기 때문에 커브드 테이블을 넣도록 했다.
 두번째에는 Attribute에 AttackPower, Multi Handle에 0.7를 넣어준다.
 그런다음 아래의 함수에 해당하는 구조채를 넣어둔다.
