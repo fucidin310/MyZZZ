@@ -43,7 +43,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 <details>
 <summary>데미지 로직</summary>
 	
-<img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
+<img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
 
 SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구성한다.
 예를 들어 방어도 50% + 공격력 70%만큼 데미지를 준다고 하자.
