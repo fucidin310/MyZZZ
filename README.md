@@ -168,15 +168,15 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
   <br />
   예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다하면 거리 가중치를 0으로 둔다.
 - MaxDistance, MaxAngle
-<br />
+  <br />
   접근 가능한 최대 거리와 최대 각도이다.  
   <br />
   위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식한다.
 - Approch Diatance, ShouldMoveBack
-<br />
+  <br />
   얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값이다.
 - TargetLocationName, TargetRotaionName
-<br />
+  <br />
   모션워핑의 WarpTargetName이다.
 
 위에서 만든 구조체를 아래 함수에 넘겨 실행하면 모션 워핑이 적용된다.
