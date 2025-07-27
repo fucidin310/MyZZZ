@@ -42,6 +42,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 [![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)<br />
 Countess, Phase, Aurora의 스킬을 설명한 영상
 <br />
+### SkillEffectDatas
 <br />
 <img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
 <br />
@@ -157,7 +158,7 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 <br />	
 <img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
 
-모션 워핑을 위한 구조체다.
+### 모션 워핑
 - DiatanceWeight, AngleWeight:
   <br />
   가장 적합한 타겟을 찾을때 필요한 가중치다.
@@ -236,6 +237,7 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 
 ## 퀘스트
 
+### Quest
 <img width="749" height="810" alt="Image" src="https://github.com/user-attachments/assets/1505e0c9-6009-44a3-a5d9-5ebc05ca1460" />
 <br />
 <br />
@@ -273,7 +275,7 @@ void UMyQuestComponent::AddQuest(TSubclassOf<UQuest> NewQuest)
 Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 저장해 같은 Quest가 중복으로 저장되지 않도록 했다.
 <br />
 <br />
-#GameEffect를 만든 이유:
+### GameEffect
 <br />
 퀘스트A를 진행할 경우 원래 마을에 있던 NPC가 농장으로 이동한다고 하자.<br />
 그 때, 퀘스트A를 취소할 경우 다시 농장에 있는 NPC가 마을로 이동해야한다.<br />
@@ -306,6 +308,7 @@ InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다
 [![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)<br />
 DialogueAsset을 만들고 그걸 NPC의 DialogueComponent에 적용시킨 후 대화하는 영상<br />
 <br />
+### DialogueAsset
 <br />
 <img width="716" height="439" alt="Image" src="https://github.com/user-attachments/assets/f46a1b0f-1f77-4bea-99f2-f427fb266dda" /><br /><br />
 위에서처럼 만든 CustomGraph를 통해 만든 DialogueAsset을 아래처럼 DialogueComponent를 가진 NPCCharacter에 넣어주면
@@ -322,7 +325,8 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 위 사진에서는 DialogueMode가 1001일 때, DA_AllanStory_First를 재생하고, 대화가 끝나면 Quest_AllanStory를 추가한다.
 <br />
 <br />
-DialogueMode를 만든 이유:
+
+### DialogueMode
 <br />
 예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때
 <br />
