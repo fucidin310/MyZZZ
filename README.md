@@ -29,19 +29,18 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 
 ## 프로젝트 개요
 
-- **전투**: GAS를 이용해 전투 시스템 구현, 플레이블 캐릭터는 일반공격, 스킬, 궁극기, 회피, 회피공격을 가지고, 버프, 디버프 등을 가집니다.
-- **대화**: CustomAsset을 이용하여 대화 에셋을 제작할 수 있습니다. 대화문과 선택지를 구현할 수 있고, 선택지에 따라 대화 분기가 갈라질 수 있습니다.
+- **전투**: GAS를 이용해 전투 시스템 구현, 플레이블 캐릭터는 일반공격, 스킬, 궁극기, 회피, 회피공격을 가지고, 버프, 디버프 등을 가집니다. 
 - **퀘스트**: 특정 몬스터 사냥, 특정 NPC와 대화 등 퀘스트 목표와 보상, 퀘스트 설명 등을 만들 수 있습니다.
+- **대화**: CustomAsset을 이용하여 대화 에셋을 제작할 수 있습니다. 대화문과 선택지를 구현할 수 있고, 선택지에 따라 대화 분기가 갈라질 수 있습니다.
 - **인벤토리**: 성유물, 모라(돈), 강화 아이템 등을 저장할 수 있습니다.
 - **강화**: 캐릭터의 레벨, 스킬 레벨을 올릴 수 있습니다. 성유물을 장착하여 캐릭터의 스펙을 올릴 수 있고, 같은 종류의 성유물을 2개, 4개를 장착하면 각각 이로운 효과를 얻습니다.
 - **세이브 로드**: 게임을 종료하면 자동으로 진행사항이 저장됩니다. SaveGames 폴더를 삭제하면 새 게임을 할 수 있습니다.
+- **그 외**: 보물 상자, 경치 카메라 등
 
 ## 전투
 
 [![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)
-
-<details>
-<summary>데미지 로직</summary>
+<br />
 <br />
 <img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
 <br />
@@ -60,7 +59,8 @@ SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구
 <br />
 <br />
 이제 해당 데미지가 발동해야 하는 타이밍에 해당되는 구조채를 넘겨 아래의 함수를 실행하게 한다.
-	
+<br />
+<br />
 <details>
 <summary>ApplyDamageEffect</summary>
 
@@ -89,11 +89,11 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 }
 ```
 </details>
-
+<br />
 그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다.
 <br />
 그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
-
+<br />
 <details>
 <summary>UGEExecCalc_Damage::Execute_Implementation</summary>
 	
@@ -154,11 +154,7 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 ```
 
 </details>
-</details>
-
-<details>
-<summary>모션 워핑 로직</summary>
-	
+<br />	
 <img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
 
 모션 워핑을 위한 구조체다.
@@ -237,4 +233,38 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 }
 ```
 </details>
-</details>
+
+## 퀘스트
+
+## 대화
+
+[![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)
+<br />
+<br />
+위에서처럼 만든 CustomGraph를 통해 만든 DialogueAsset을 아래처럼 DialogueComponent를 가진 NPCCharacter에 넣어주면
+<br />
+NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interact함수에서 해당하는 Dialogue를 재생한다.
+<br />
+<img width="675" height="175" alt="Image" src="https://github.com/user-attachments/assets/b59545a4-428e-4d4b-b672-6dcedee16a45" />
+<br />
+- DialogueAsset: 말그대로 DialogueAsset
+- DialogueMode: 어떤 DialogueMode일 때 재생할건지
+- DialpgueEffect: 대화가 종료될때 적용할 효과(예: 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등)
+<br />
+<br />
+위 사진에서는 DialogueMode가 1001일 때, DA_AllanStory_First를 재생하고, 대화가 끝나면 Quest_AllanStory를 추가한다.
+<br />
+<br />
+DialogueMode를 만든 이유:
+<br />
+예를 들면 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때
+<br />
+서로 다른 퀘스트가 어떤 대화문을 재생해야하는지를 덮어쓰는 문제가 생길 수 있어서,
+<br />
+int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였다.
+<br />
+그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수 도 있지만
+<br />
+예를 들어 어떤 퀘스트를 완료하기 전후나 혹은 어떤 지역에 다녀온 전후로 대화문이 바뀌는 경우처럼
+<br />
+어떤 대화를 할지 NPC 자체에서 정할 필요가 있기에 이렇게 구현했다.
