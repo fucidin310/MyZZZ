@@ -305,6 +305,7 @@ InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다
 [![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)
 <br />
 <br />
+<img width="716" height="439" alt="Image" src="https://github.com/user-attachments/assets/f46a1b0f-1f77-4bea-99f2-f427fb266dda" /><br /><br />
 위에서처럼 만든 CustomGraph를 통해 만든 DialogueAsset을 아래처럼 DialogueComponent를 가진 NPCCharacter에 넣어주면
 <br />
 NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interact함수에서 해당하는 Dialogue를 재생한다.
