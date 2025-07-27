@@ -280,14 +280,23 @@ GameEffect를 만든 이유:
 <br />
 GameEffect에는 ActivateGameEffect/DeactivateGameEffect 라는 함수가 있다.<br />
 여기에 작동/원상복구를 각각 구현한다.<br />
-그리고 커스텀한 GameEffect를 GameState에 있는 GameEffectSystemComponent의 ApplyGameEffect/RemoveGameEffect를 통해 활성화/비활성화 시킨다.<br />
+그리고 커스텀한 GameEffect를 GameState에 있는 GameEffectSystemComponent의 ApplyGameEffect/RemoveGameEffect를 통해 활성화/비활성화 시킨다.<br /><br />
+<img width="481" height="282" alt="Image" src="https://github.com/user-attachments/assets/c8eb74d5-4cb2-4c2a-91bd-a3913639c142" /><br /><br />
+
+- Components: GameEffect에 적용할 효과, GameplayEffect를 참고해서 만들었다.<br />
+  - Handle DialogueMode: DialogueMode를 추가하거나 제거하는 효과, 어떤 레벨의 어떤 NPC에게 어떤 DialogueMode를 추가/제거 할지 정할 수 있다.<br />
+  - Toggle Visibly: 특정 NPC를 Visible/Hidden 상태로 변경하는 효과, 어떤 레벨의 어떤 NPC에게 적용할지 정할 수 있다.<br />
+  
 <br />
 이는 퀘스트에서만 사용하는 건 아니다.<br />
 예를 들면 이 게임에서는 게임에 처음 접속하면 처음 만나는 촌장 NPC를 제외한 다른 NPC를 Hidden 상태로 바꿔야 한다.<br />
 이를 위해 기본상태인 다른 NPC는 Visible, 처음만나는 촌장 NPC는 Hidden인 상태에서<br />
 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바꾸는 GameEffect를 만들고,<br />
-InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다.<br />
-<img width="573" height="202" alt="Image" src="https://github.com/user-attachments/assets/9faaa4b5-1639-475d-85de-88d62d157f13" /><br />
+InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다.<br /><br />
+<img width="573" height="202" alt="Image" src="https://github.com/user-attachments/assets/9faaa4b5-1639-475d-85de-88d62d157f13" /><br /><br />
+그럼 마지막으로 플레이한 버전이 InitGameEffectDataAssets의 버전보다 낮으면 해당 GameEffect를 적용한다. 물론 이것도 비활성화 할 수 있다.<br />
+이렇게 하면 처음 0.0.0.1 버전을 플레이할 경우 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바뀌게 되고,<br />
+퀘스트를 진행하면서 점점 만날 수 있는 NPC가 생기게 된다.<br />
 <br />
 <br />
 
