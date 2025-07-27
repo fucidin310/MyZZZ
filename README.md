@@ -296,7 +296,7 @@ GameEffect에는 ActivateGameEffect/DeactivateGameEffect 라는 함수가 있다
 InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다.<br /><br />
 <img width="573" height="202" alt="Image" src="https://github.com/user-attachments/assets/9faaa4b5-1639-475d-85de-88d62d157f13" /><br /><br />
 그럼 마지막으로 플레이한 버전이 InitGameEffectDataAssets의 버전보다 낮으면 해당 GameEffect를 적용한다. 물론 이것도 비활성화 할 수 있다.<br />
-이렇게 하면 처음 0.0.0.1 버전을 플레이할 경우 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바뀌게 되고,<br />
+이렇게 하면 처음 0.0.0.1 버전 혹은 더 높은 버전을 플레이할 경우 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바뀌게 되고,<br />
 퀘스트를 진행하면서 점점 GameEffect를 비활성화 하다보면, 만날 수 있는 NPC가 생기게 된다.<br />
 <br />
 <br />
