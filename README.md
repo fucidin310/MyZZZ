@@ -238,14 +238,22 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 <img width="749" height="810" alt="Image" src="https://github.com/user-attachments/assets/1505e0c9-6009-44a3-a5d9-5ebc05ca1460" />
 <br />
 <br />
-- Title: 말그대로 퀘스트의 타이틀
+- Title: 말그대로 퀘스트의 타이틀  
+  <br />
 - QuestStage: 퀘스트의 진행 단계
+  <br />
   - QuestStageStartGameEffectList, QuestStageClearGameEffectList: 각각 QuestStage를 시작할때와 성공할때 적용할 GameEffectList, 사실 하나만 있어도 되지만 햇갈려서 둘다 만들었다. GameEffectList는 아래서 따로 설명
+  <br />
   - QuestObjectives: 퀘스트의 세부 목표, 예를 들면 NPC A에게 돈 주기라는 QuestStage가 있으면 특정 액수만큼 돈 보유와 NPC A와 대화하기가 QuestObjectives인 식, 현재는 특정 NPC와 대화하기, 특정 몬스터 잡기가 구현됨
+  <br />
 -  Rewards: 퀘스트 클리어 시 보상, 꼭 퀘스트가 아니더라도 던전 클리어나 보물 상자를 통해서도 얻을 수 있도록 따로 클래스로 뺐다.
+  <br />
   - Common Reward: 특정 아이템을 특정 수량만큼 획득
+  <br />
   - Handle GameEffect: 특정 GameEffect를 활성화 혹은 비활성화
+  <br />
   - Reward Random Amount: 특정 아이템을 랜덤한 수량만큼 획득
+  <br />
   - Reward Random Choice: 특정 수량만큼 정해진 아이템 풀에서 랜덤 획득
 <br />
 <br />
