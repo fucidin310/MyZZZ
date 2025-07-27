@@ -55,7 +55,7 @@ SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구
 <br />
 두번째에는 Attribute에 AttackPower, Multi Handle에 0.7를 넣어준다.
 <br />
-데미지의 경우에는 스킬에 레벨에 따라 변화하기 때문에 커브드 테이블을 넣도록 했다.
+데미지 배율의 경우에는 스킬에 레벨에 따라 변화하기 때문에 커브드 테이블을 넣도록 했다. 데미지를 계산할 때 스킬의 레벨에 맞는 값을 가져온다.
 <br />
 <br />
 이제 해당 데미지가 발동해야 하는 타이밍에 해당되는 구조채를 넘겨 아래의 함수를 실행하게 한다.
@@ -274,7 +274,20 @@ Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 �
 <br />
 GameEffect를 만든 이유:
 <br />
-퀘스트
+퀘스트A를 진행할 경우 원래 마을에 있던 NPC가 농장으로 이동한다고 하자.<br />
+그 때, 퀘스트A를 취소할 경우 다시 농장에 있는 NPC가 마을로 이동해야한다.<br />
+그렇기에 활성화/비활성화 시 작동/원상복구 되는 효과가 필요하다고 생각했다.<br />
+<br />
+GameEffect에는 ActivateGameEffect/DeactivateGameEffect 라는 함수가 있다.<br />
+여기에 작동/원상복구를 각각 구현한다.<br />
+그리고 커스텀한 GameEffect를 GameState에 있는 GameEffectSystemComponent의 ApplyGameEffect/RemoveGameEffect를 통해 활성화/비활성화 시킨다.<br />
+<br />
+이는 퀘스트에서만 사용하는 건 아니다.<br />
+예를 들면 이 게임에서는 게임에 처음 접속하면 처음 만나는 촌장 NPC를 제외한 다른 NPC를 Hidden 상태로 바꿔야 한다.<br />
+이를 위해 기본상태인 다른 NPC는 Visible, 처음만나는 촌장 NPC는 Hidden인 상태에서<br />
+다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바꾸는 GameEffect를 만들고,<br />
+InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다.<br />
+<img width="573" height="202" alt="Image" src="https://github.com/user-attachments/assets/9faaa4b5-1639-475d-85de-88d62d157f13" /><br />
 <br />
 <br />
 
