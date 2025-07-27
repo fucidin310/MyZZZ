@@ -247,9 +247,8 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
   - Common Reward: 특정 아이템을 특정 수량만큼 획득
   - Handle GameEffect: 특정 GameEffect를 활성화 혹은 비활성화
   - Reward Random Amount: 특정 아이템을 랜덤한 수량만큼 획득
-  - Reward Random Choice: 특정 수량만큼 정해진 아이템 풀에서 랜덤 획득
+  - Reward Random Choice: 정해진 아이템 풀에서 특정 수량만큼 랜덤 획득
 
-<br />
 <br />
 위처럼 만든 퀘스트 에셋을 PlayerState에 있는 QuestComponent의 함수 AddQuest에 추가하면 Quest를 추가할 수 있다. 보통 대화를 통해 추가한다.
 
