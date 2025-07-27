@@ -60,7 +60,6 @@ SkillEffectDatas를 수정해 데미지를 부여할 때 사용할 정보를 구
 <br />
 이제 해당 데미지가 발동해야 하는 타이밍에 해당되는 구조채를 넘겨 아래의 함수를 실행하게 한다.
 <br />
-<br />
 <details>
 <summary>ApplyDamageEffect</summary>
 
