@@ -329,14 +329,170 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 
 ### DialogueMode
 <br />
-예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때
+예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때<br />
+서로 다른 퀘스트가 어떤 대화문을 재생해야하는지를 덮어쓰는 문제가 생길 수 있어서,<br />
+int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였다.<br />
+그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수 도 있지만<br />
+예를 들어 어떤 퀘스트를 완료하기 전후나 혹은 어떤 지역에 다녀온 전후로 대화문이 바뀌는 경우처럼<br />
+꼭 퀘스트가 어떤 대화를 할지 정하는 게 아니기에 NPC 자체에서 어떤 대화문을 재생할지 정하게 구현했다.<br />
 <br />
-서로 다른 퀘스트가 어떤 대화문을 재생해야하는지를 덮어쓰는 문제가 생길 수 있어서,
+
+## 인벤토리
+
+![Image](https://github.com/user-attachments/assets/1220c0b6-c434-4562-8dd7-a32bd32a9daf)
 <br />
-int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였다.
+
+현재, 강화아이템, 귀중품, 성유물 인벤토리가 있고,<br />
+강화아이템, 귀중품은 TMap<UClass*, int>으로 성유물은 TArray<UItem*>으로 저장하고 있다.<br />
+성유물의 경우에는 같은 Class라도 각 인스턴스마다 부여하는 능력치가 다르기 때문에 인스턴스로 저장한다.<br />
+아이템을 인벤토리로 추가할 때는 PlayerState의 InventoryComponent의 AddItem 함수에 원하는 아이템 클래스와 수량을 넘겨 실행한다.<br />
+
+<details>
+<summary>AddItem</summary>
+	
+```
+void UMyInventoryComponent::AddItem(TSubclassOf<UItem> NewItem, int Amount)
+{
+	if (NewItem == nullptr) return;
+
+	bool bIsFinded = false;
+
+	switch (NewItem.GetDefaultObject()->GetItemType())
+	{
+	case EItemType::LevelUpMaterial:
+		if (LevelUpMaterialInventory.Contains(NewItem))
+		{
+			bIsFinded = true;
+			LevelUpMaterialInventory[NewItem] += Amount;
+		}
+		break;
+	case EItemType::Precious:
+		if (PreciousInventory.Contains(NewItem))
+		{
+			bIsFinded = true;
+			PreciousInventory[NewItem] += Amount;
+		}
+		break;
+	case EItemType::Artifact:
+		for (int i = 0; i < Amount; i++)
+		{
+			UArtifact* ArtifactInstance = NewObject<UArtifact>(this, NewItem);
+			ArtifactInstance->MakeRandomBonus();
+			ArtifactInventory.Add(ArtifactInstance);
+			OnItemAdded.Broadcast(Cast<UItem>(ArtifactInstance), 1);
+		}
+		bIsFinded = true;
+		break;
+	default:
+		break;
+	}
+
+	if (!bIsFinded)
+	{
+		switch (NewItem.GetDefaultObject()->GetItemType())
+		{
+		case EItemType::LevelUpMaterial:
+			LevelUpMaterialInventory.Add(NewItem, Amount);
+			break;
+		case EItemType::Precious:
+			PreciousInventory.Add(NewItem, Amount);
+			break;
+		default:
+			break;
+		}
+	}
+
+	switch (NewItem.GetDefaultObject()->GetItemType())
+	{
+	case EItemType::LevelUpMaterial:
+	case EItemType::Precious:
+		OnItemAdded.Broadcast(NewItem.GetDefaultObject(), Amount);
+		break;
+	default:
+		break;
+	}
+}
+```
+
+</details>
 <br />
-그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수 도 있지만
+
+성유물의 스팩은 이때 정해진다.
+
+<details>
+<summary>MakeRandomBonus</summary>
+	
+```
+void UArtifact::MakeRandomBonus()
+{
+	TArray<int32> BonusTypeIndices;
+	for (int32 i = 0; i < (int32)EEquipmentBonusType::MAX; i++)
+	{
+		BonusTypeIndices.Add(i);
+	}
+
+	if (BonusTypeIndices.Num() >= 4)
+	{
+		Algo::RandomShuffle(BonusTypeIndices);
+
+		for (int32 i = 0; i < 4; i++)
+		{
+			FEquipmentBonusData NewBonus;
+			NewBonus.EquipmentBonusType = (EEquipmentBonusType)BonusTypeIndices[i];
+			UMyFunctionLibrary::AddEquipmentBonus(NewBonus);
+			ArtifactEquipmentBonusData.Add(NewBonus);
+		}
+	}
+}
+```
+
+</details>
 <br />
-예를 들어 어떤 퀘스트를 완료하기 전후나 혹은 어떤 지역에 다녀온 전후로 대화문이 바뀌는 경우처럼
+
+<details>
+<summary>AddEquipmentBonus</summary>
+	
+```
+void UMyFunctionLibrary::AddEquipmentBonus(FEquipmentBonusData& EquipmentBonusData)
+{
+	int BonusAmount = FMath::RandRange(0, 4);;
+
+	float AddValue = 0.f;
+
+	switch (EquipmentBonusData.EquipmentBonusType)
+	{
+	case EEquipmentBonusType::Health:
+		AddValue = 209 + 30 * BonusAmount;
+		break;
+	case EEquipmentBonusType::HealthRatio:
+		AddValue = 0.041 + 0.005 * BonusAmount;
+		break;
+	case EEquipmentBonusType::AttackPower:
+		AddValue = 14 + 2 * BonusAmount;
+		break;
+	case EEquipmentBonusType::AttackPowerRatio:
+		AddValue = 0.041 + 0.005 * BonusAmount;
+		break;
+	case EEquipmentBonusType::DefensePower:
+		AddValue = 16 + 3 * BonusAmount;
+		break;
+	case EEquipmentBonusType::DefensePowerRatio:
+		AddValue = 0.051 + 0.007 * BonusAmount;
+		break;
+	case EEquipmentBonusType::CriticalDamage:
+		AddValue = 0.054 + 0.008 * BonusAmount;
+		break;
+	case EEquipmentBonusType::CriticalChance:
+		AddValue = 0.027 + 0.004 * BonusAmount;
+		break;
+	default:
+		break;
+	}
+
+	EquipmentBonusData.StackCount++;
+	EquipmentBonusData.Value += AddValue;
+}
+```
+
+</details>
 <br />
-꼭 퀘스트가 어떤 대화를 할지 정하는 게 아니기에 NPC 자체에서 어떤 대화문을 재생할지 정하게 구현했다.
