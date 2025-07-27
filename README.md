@@ -496,3 +496,96 @@ void UMyFunctionLibrary::AddEquipmentBonus(FEquipmentBonusData& EquipmentBonusDa
 
 </details>
 <br />
+
+## 강화
+![Image](https://github.com/user-attachments/assets/8c7da264-dd2a-42ec-8671-5dec3526f398)<br />
+
+### 캐릭터 레벨업
+경험치 책을 이용해 레벨업 한다. 경험치 책은 그 종류마다 서로 다른 경험치 양을 가진다.<br />
+각 레벨당 필요한 골드와 경험치는 커브드 테이블로 저장된다.<br />
+
+### 성유물 장착
+5종류의 부위에 각각 성유물을 장착할 수 있다.<br />
+성유물을 장착하면 그 성유물에 부여된 스탯보너스를 얻고,<br />
+같은 종유의 성유물을 2개, 4개 장착할 경우 특수한 보너스를 얻게 된다.<br />
+<br />
+예를 들어 영상 속 검투사의 피날레의 경우 2셋은 공격력 +18%, 4셋은 일반공격시 35% 데미지 부스트를 얻게된다.<br />
+이는 장착 시 스텟 보너스와 세트 효과는 GameplayEffect로 구현한다.<br />
+
+<details>
+<summary>EquipArtifact</summary>
+	
+```
+void UMyEquipmentComponent::EquipArtifact(UArtifact* InArtifact)
+{
+	if (!InArtifact) return;
+
+	if (AMyPlayableCharacter* Other = InArtifact->GetOwner())
+	{
+		Other->GetEquipmentComponent()->UnequipArtifact(InArtifact);
+	}
+
+	UArtifact* lastArtifact = nullptr;
+	int ArtifactTypeToInt = (int)InArtifact->GetArtifactType();
+	lastArtifact = ArtifactList[ArtifactTypeToInt].Get();
+	if (lastArtifact)
+	{
+		UnequipArtifact(lastArtifact);
+	}
+
+	AMyPlayableCharacter* OwnerCharacter = Cast<AMyPlayableCharacter>(GetOwner());
+	InArtifact->SetOwner(OwnerCharacter);
+	ArtifactList[ArtifactTypeToInt] = InArtifact;
+
+	int ArtifactSetCount = GetArtifactSetCount(InArtifact);
+	if (ArtifactSetCount == 2)
+	{
+		InArtifact->ApplyTwoPieceBouns();
+	}
+	else if (ArtifactSetCount == 4)
+	{
+		InArtifact->ApplyFourPieceBouns();
+	}
+
+	UAbilitySystemComponent* AbilitySystemComponent = OwnerCharacter->GetAbilitySystemComponent();
+	if (!AbilitySystemComponent) return;
+
+	if (ArtifactEquipmentEffectHandle.IsValid())
+	{
+		AbilitySystemComponent->RemoveActiveGameplayEffect(ArtifactEquipmentEffectHandle);
+	}
+
+#pragma region EquipmentEffect
+	FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+	ContextHandle.AddSourceObject(OwnerCharacter);
+
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(ArtifactEquipmentEffect, 1.0f, ContextHandle);
+
+	if (SpecHandle.IsValid())
+	{
+		FStatBonusSpec StatBonusSpec = GetArtifactsStatBonusSpec();
+
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_MaxHealth, StatBonusSpec.Health);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_MaxHealthRatio, StatBonusSpec.HealthRatio);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_AttackPower, StatBonusSpec.AttackPower);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_AttackPowerRatio, StatBonusSpec.AttackPowerRatio);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_DefensePower, StatBonusSpec.DefensePower);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_DefensePowerRatio, StatBonusSpec.DefensePowerRatio);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_CriticalDamage, StatBonusSpec.CriticalDamage);
+		SpecHandle.Data->SetSetByCallerMagnitude(MyGameplayTags::SetByCaller_Equipment_CriticalChance, StatBonusSpec.CriticalChance);
+
+		ArtifactEquipmentEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
+#pragma endregion
+}
+```
+
+</details>
+<br />
+장착 시 스텟 보너스는 SetByCaller를 이용해 스탯보너스를 주고,<br />
+세트 효과의 경우, 그 종류에 따라 조금 다른데, 일반공격 시 35% 데미지 부스트는 일반 공격 시 부여되는 테그를 Reguire Tags to Apply This Effect에 넣어서 일반공격시에만 적용되도록 하였다.<br />
+
+### 스킬 강화
+플레이블 캐릭터의 일반 공격, 스킬, 궁극기, 회피공격, 회피를 강화할 수 있다.<br />
+각 스킬 레벨로 강화시 필요한 아이템과 골드 역시 커브드 테이블로 관리한다.<br />
+SkillEffectDatas에서 본 스킬 이름과 설명, 배율 등을 가져와 현재 레벨에서 다음 레벨로 변할 때 무엇이 바뀌는 지 표시한다.<br />
