@@ -35,7 +35,7 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 - **인벤토리**: 성유물, 모라(돈), 강화 아이템 등을 저장할 수 있습니다.
 - **강화**: 캐릭터의 레벨, 스킬 레벨을 올릴 수 있습니다. 성유물을 장착하여 캐릭터의 스펙을 올릴 수 있고, 같은 종류의 성유물을 2개, 4개를 장착하면 각각 이로운 효과를 얻습니다.
 - **세이브 로드**: 게임을 종료하면 자동으로 진행사항이 저장됩니다. SaveGames 폴더를 삭제하면 새 게임을 할 수 있습니다.
-- **그 외**: 보물 상자, 경치 카메라 등
+- **그 외**: 보물 상자, 경치 카메라, 스토리 등
 
 ## 전투
 
@@ -233,6 +233,50 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 ```
 </details>
 
+## 퀘스트
+
+<img width="749" height="810" alt="Image" src="https://github.com/user-attachments/assets/1505e0c9-6009-44a3-a5d9-5ebc05ca1460" />
+<br />
+<br />
+- Title: 말그대로 퀘스트의 타이틀
+- QuestStage: 퀘스트의 진행 단계
+  - QuestStageStartGameEffectList, QuestStageClearGameEffectList: 각각 QuestStage를 시작할때와 성공할때 적용할 GameEffectList, 사실 하나만 있어도 되지만 햇갈려서 둘다 만들었다. GameEffectList는 아래서 따로 설명
+  - QuestObjectives: 퀘스트의 세부 목표, 예를 들면 NPC A에게 돈 주기라는 QuestStage가 있으면 특정 액수만큼 돈 보유와 NPC A와 대화하기가 QuestObjectives인 식, 현재는 특정 NPC와 대화하기, 특정 몬스터 잡기가 구현됨
+-  Rewards: 퀘스트 클리어 시 보상, 꼭 퀘스트가 아니더라도 던전 클리어나 보물 상자를 통해서도 얻을 수 있도록 따로 클래스로 뺐다.
+  - Common Reward: 특정 아이템을 특정 수량만큼 획득
+  - Handle GameEffect: 특정 GameEffect를 활성화 혹은 비활성화
+  - Reward Random Amount: 특정 아이템을 랜덤한 수량만큼 획득
+  - Reward Random Choice: 특정 수량만큼 정해진 아이템 풀에서 랜덤 획득
+<br />
+<br />
+위처럼 만든 퀘스트 에셋을 PlayerState에 있는 QuestComponent의 함수 AddQuest에 추가하면 Quest를 추가할 수 있다. 보통 대화를 통해 추가한다.
+
+<details>
+<summary>AddQuest</summary>
+	
+```
+void UMyQuestComponent::AddQuest(TSubclassOf<UQuest> NewQuest)
+{
+	if (ActiveQuests.Find(NewQuest)) return;
+
+	UQuest* QuestInstance = NewObject<UQuest>(this, NewQuest);
+	QuestInstance->OnQuestActivated();
+	ActiveQuests.Add(NewQuest, QuestInstance);
+	OnQuestAdded.Broadcast(QuestInstance);
+}
+```
+
+</details>
+
+Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 저장해 같은 Quest가 중복으로 저장되지 않도록 했다.
+<br />
+<br />
+GameEffect를 만든 이유:
+<br />
+퀘스트
+<br />
+<br />
+
 ## 대화
 
 [![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)
@@ -246,7 +290,7 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 <br />
 - DialogueAsset: 말그대로 DialogueAsset
 - DialogueMode: 어떤 DialogueMode일 때 재생할건지
-- DialpgueEffect: 대화가 종료될때 적용할 효과(예: 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등)
+- DialogueEffect: 대화가 종료될때 적용할 효과(예: 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등)
 <br />
 <br />
 위 사진에서는 DialogueMode가 1001일 때, DA_AllanStory_First를 재생하고, 대화가 끝나면 Quest_AllanStory를 추가한다.
