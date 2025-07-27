@@ -240,6 +240,10 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 <br />
 - Title: 말그대로 퀘스트의 타이틀
 - QuestStage: 퀘스트의 진행 단계
+- Rewards: 퀘스트 클리어 시 보상, 꼭 퀘스트가 아니더라도 던전 클리어나 보물 상자를 통해서도 얻을 수 있도록 따로 클래스로 뺐다.
+
+- Title: 말그대로 퀘스트의 타이틀
+- QuestStage: 퀘스트의 진행 단계
   <br />
   QuestStageStartGameEffectList, QuestStageClearGameEffectList: 각각 QuestStage를 시작할때와 성공할때 적용할 GameEffectList, 사실 하나만 있어도 되지만 햇갈려서 둘다 만들었다. GameEffectList는 아래서 따로 설명
   <br />
