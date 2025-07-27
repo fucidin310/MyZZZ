@@ -273,7 +273,7 @@ void UMyQuestComponent::AddQuest(TSubclassOf<UQuest> NewQuest)
 Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 저장해 같은 Quest가 중복으로 저장되지 않도록 했다.
 <br />
 <br />
-GameEffect를 만든 이유:
+#GameEffect를 만든 이유:
 <br />
 퀘스트A를 진행할 경우 원래 마을에 있던 NPC가 농장으로 이동한다고 하자.<br />
 그 때, 퀘스트A를 취소할 경우 다시 농장에 있는 NPC가 마을로 이동해야한다.<br />
