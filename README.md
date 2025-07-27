@@ -156,9 +156,10 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 
 </details>
 <br />	
-<img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
 
 ### 모션 워핑
+<img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
+
 - DiatanceWeight, AngleWeight:
   <br />
   가장 적합한 타겟을 찾을때 필요한 가중치다.
