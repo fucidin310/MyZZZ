@@ -39,7 +39,8 @@ https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive
 
 ## 전투
 
-[![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)
+[![Video Label](http://img.youtube.com/vi/AfuFAma8Gmo/0.jpg)](https://youtu.be/AfuFAma8Gmo)<br />
+Countess, Phase, Aurora의 스킬을 설명한 영상
 <br />
 <br />
 <img width="756" height="416" alt="Image" src="https://github.com/user-attachments/assets/71446975-f29e-4eb4-ac89-6ff9576c797e" />
@@ -302,7 +303,8 @@ InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다
 
 ## 대화
 
-[![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)
+[![Video Label](http://img.youtube.com/vi/lM4dApp4Mpo/0.jpg)](https://youtu.be/lM4dApp4Mpo)<br />
+DialogueAsset을 만들고 그걸 NPC의 DialogueComponent에 적용시킨 후 대화하는 영상<br />
 <br />
 <br />
 <img width="716" height="439" alt="Image" src="https://github.com/user-attachments/assets/f46a1b0f-1f77-4bea-99f2-f427fb266dda" /><br /><br />
