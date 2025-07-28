@@ -26,7 +26,7 @@
 
 ## 개발용 프로젝트 파일
 
-https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive_link
+[https://drive.google.com/file/d/18zehQXnHLd8GQER4SQSt7WthxxlE0XsJ/view?usp=drive_link](https://drive.google.com/file/d/1IvSwQ4RH_eWFUohT1p-8D9zgNYv3eKpl/view?usp=sharing)
 
 ## 프로젝트 개요
 
