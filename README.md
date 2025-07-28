@@ -12,7 +12,7 @@
 
 ## 플레이용 빌드 버전
 
-https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive_link
+[https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive_link](https://drive.google.com/file/d/1etL2BK2FEJ5YWJj0tYubBuxTAOk26HBE/view?usp=sharing)
 
 - **WASD**: 이동
 - **F**: 상호작용
