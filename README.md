@@ -8,7 +8,7 @@
 
 ## 플레이 영상
 
-[![Video Label](http://img.youtube.com/vi/12kmY2aP2SY/0.jpg)](https://youtu.be/12kmY2aP2SY)
+[![Video Label](http://img.youtube.com/vi/VVsPYRhpXRI/0.jpg)](https://youtu.be/VVsPYRhpXRI)
 
 ## 플레이용 빌드 버전
 
