@@ -592,7 +592,8 @@ SaveGames을 이용해 간단하게 세이브 로드를 구현했습니다.<br /
 
 ### 보물 상자
 ![Image](https://github.com/user-attachments/assets/f38ef7ec-0d30-42cc-a092-62f6be0631e4)<br />
-IInteractable 인터페이스를 이용해 상호작용
+IInteractable 인터페이스를 이용해 상호작용 해 위에서 설명한 Reward를 통해 보상을 받도록 했다.<br />
+물론 SaveGames를 통해 이미 얻은 상자는 보이지 않도록 했다.
 
 ### 경치 카메라
 ![Image](https://github.com/user-attachments/assets/6269f8a7-5432-49db-9243-e0cdfab01cd1)
