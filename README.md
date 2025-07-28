@@ -15,6 +15,7 @@
 https://drive.google.com/file/d/1ZYOvYS56eSa4_rt6HCc5HcEDY9wDpYjW/view?usp=drive_link
 
 - **WASD**: 이동
+- **F**: 상호작용
 - **마우스 좌클릭**: 일반공격
 - **마우스 우클릭**: 회피
 - **E**: 스킬
