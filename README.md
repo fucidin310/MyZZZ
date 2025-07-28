@@ -591,12 +591,14 @@ SaveGames을 이용해 간단하게 세이브 로드를 구현했습니다.<br /
 게임을 종료할 때 세이브 되도록 했습니다.<br /><br />
 
 ### 보물 상자
-![Image](https://github.com/user-attachments/assets/f38ef7ec-0d30-42cc-a092-62f6be0631e4)
+![Image](https://github.com/user-attachments/assets/f38ef7ec-0d30-42cc-a092-62f6be0631e4)<br />
+IInteractable 인터페이스를 이용해 상호작용
 
 ### 경치 카메라
 ![Image](https://github.com/user-attachments/assets/6269f8a7-5432-49db-9243-e0cdfab01cd1)
 
-### 스토리
-
 ### 카메라와 겹칠 시 반투명화
-![Image](https://github.com/user-attachments/assets/a560dd2f-de7f-4c53-93d9-4d440926798b)
+![Image](https://github.com/user-attachments/assets/a560dd2f-de7f-4c53-93d9-4d440926798b)<br />
+카메라부터 대상까지 벡터와 카메라부터 캐릭터까지 벡터의 내적을 이용해해 그 값을 디더링해서 반투명화.<br />
+몬스터나 건물에 적용해 캐릭터가 가려지지 않도록 했다.<br />
+<img width="1484" height="533" alt="Image" src="https://github.com/user-attachments/assets/73a0033b-dce6-4748-b4f7-8df419eaa552" /><br />
