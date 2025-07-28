@@ -584,7 +584,18 @@ void UMyEquipmentComponent::EquipArtifact(UArtifact* InArtifact)
 장착 시 스텟 보너스는 SetByCaller를 이용해 스탯보너스를 주고,<br />
 세트 효과의 경우, 그 종류에 따라 조금 다른데, 일반공격 시 35% 데미지 부스트는 일반 공격 시 부여되는 테그를 Reguire Tags to Apply This Effect에 넣어서 일반공격시에만 적용되도록 하였다.<br />
 
-### 스킬 강화
-플레이블 캐릭터의 일반 공격, 스킬, 궁극기, 회피공격, 회피를 강화할 수 있다.<br />
-각 스킬 레벨로 강화시 필요한 아이템과 골드 역시 커브드 테이블로 관리한다.<br />
-SkillEffectDatas에서 본 스킬 이름과 설명, 배율 등을 가져와 현재 레벨에서 다음 레벨로 변할 때 무엇이 바뀌는 지 표시한다.<br />
+## 그 외
+### 세이브 로드
+SaveGames을 이용해 간단하게 세이브 로드를 구현했습니다.<br />
+게임을 종료할 때 세이브 되도록 했습니다.<br /><br />
+
+### 보물 상자
+![Image](https://github.com/user-attachments/assets/f38ef7ec-0d30-42cc-a092-62f6be0631e4)
+
+### 경치 카메라
+![Image](https://github.com/user-attachments/assets/6269f8a7-5432-49db-9243-e0cdfab01cd1)
+
+### 스토리
+
+### 카메라와 겹칠 시 반투명화
+![Image](https://github.com/user-attachments/assets/a560dd2f-de7f-4c53-93d9-4d440926798b)
