@@ -160,7 +160,7 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 ### 모션 워핑
 <img width="762" height="242" alt="Image" src="https://github.com/user-attachments/assets/1dc86920-a0e4-4ca3-ac7f-f082e802f099" />
 
-- DiatanceWeight, AngleWeight<br />  
+- DiatanceWeight, AngleWeight  
   가장 적합한 타겟을 찾을때 필요한 가중치입니다.<br />
   예를 들어 100m 앞에 있고 카메라 방향과 45도 떨어진 적과, 200m 앞에 있고 카메라 방향과 10도 떨어진 적 중 어떤 적이 접근하기 가장 적합한 타겟인지 정해야 할 때,<br />
   거리를 더 중요 시 할지 각도를 더 중요시 할지 가중치의 비율을 조절할 수 있습니다.<br />
