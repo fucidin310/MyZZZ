@@ -167,20 +167,16 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
   예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다고 하면 거리 가중치를 0으로 두면 됩니다.<br />
   이는 스킬마다 다 다를 수 있습니다.<br />
   예를 들어 일반 근접 공격의 경우 각도보다는 가까운 적에게 가는 것이 적합하지만,<br />
-  바라보는 한 적에게 순간이동해 공격하는 스킬의 경우 거리보다는 바라보는 방향에 가장 가까운 적에게 가는 것이 적합합니다.<br />
-- MaxDistance, MaxAngle:
-  <br />
-  접근 가능한 최대 거리와 최대 각도이다.
-  <br />
-  위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식한다.
-- Approch Diatance, ShouldMoveBack:
-  <br />
-  얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값이다.
-- TargetLocationName, TargetRotaionName:
-  <br />
-  모션워핑의 WarpTargetName이다.
+  바라보는 적에게 순간이동하는 스킬의 경우 거리보다는 바라보는 방향에 가장 가까운 적에게 가는 것이 적합합니다.<br />
+- MaxDistance, MaxAngle  
+  접근 가능한 최대 거리와 최대 각도입니다.<br />  
+  위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식합니다.<br />
+- Approch Diatance, ShouldMoveBack:  
+  얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값입니다.<br />
+- TargetLocationName, TargetRotaionName:  
+  모션워핑의 WarpTargetName입니다.<br />
 
-위에서 만든 구조체를 아래 함수에 넘겨 실행하면 모션 워핑이 적용된다.
+아래 함수에 위에서 만든 구조체를 넘겨 실행하면 모션 워핑이 적용됩니다.<br />
 
 <details>
 <summary>ApprochBestTarget</summary>
