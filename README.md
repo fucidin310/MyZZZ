@@ -171,7 +171,7 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 - MaxDistance, MaxAngle  
   접근 가능한 최대 거리와 최대 각도입니다.<br />  
   위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식합니다.<br />
-- Approch Diatance, ShouldMoveBack:  
+- Approch Diatance, ShouldMoveBack:
   얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값입니다.<br />
 - TargetLocationName, TargetRotaionName:  
   모션워핑의 WarpTargetName입니다.<br />
