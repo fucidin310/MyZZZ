@@ -93,10 +93,8 @@ void UMyGameplayAbility::ApplyDamageEffect(AActor* TargetActor, const FGameplayE
 ```
 </details>
 <br />
-그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 게임이펙트가 실행된다.
-<br />
-그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여된다.
-<br />
+그럼 SetByCaller로 기본데미지가 타겟으로 넘어가고, 데미지를 부여하는 GameplayEffect가 실행됩니다.<br />
+그럼 아래의 UGEExecCalc_Damage에 의해 최종 데미지가 계산되고 부여됩니다.<br />
 <details>
 <summary>UGEExecCalc_Damage::Execute_Implementation</summary>
 	
@@ -164,11 +162,13 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 
 - DiatanceWeight, AngleWeight:
   <br />
-  가장 적합한 타겟을 찾을때 필요한 가중치다.
-  <br />
-  예를 들어 100m 앞에 있고 카메라 방향과 45도 떨어진 적과 200m 앞에 있고 카메라 방향과 10도 떨어진 적 중 어떤 적에게 접근할지 정해야 할때, 거리 가중치와 각도 가중치의 비율을 조절한다.
-  <br />
-  예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다하면 거리 가중치를 0으로 둔다.
+  가장 적합한 타겟을 찾을때 필요한 가중치입니다.<br />  
+  예를 들어 100m 앞에 있고 카메라 방향과 45도 떨어진 적과, 200m 앞에 있고 카메라 방향과 10도 떨어진 적 중 어떤 적이 접근하기 가장 적합한 타겟인지 정해야 할 때,<br />
+  거리를 더 중요 시 할지 각도를 더 중요시 할지 가중치의 비율을 조절할 수 있습니다.<br />
+  예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다고 하면 거리 가중치를 0으로 두면 됩니다.<br />
+  이는 스킬마다 다 다를 수 있습니다.<br />
+  예를 들어 일반 근접 공격의 경우 각도보다는 가까운 적에게 가는 것이 적합하지만,<br />
+  바라보는 한 적에게 순간이동해 공격하는 스킬의 경우 거리보다는 바라보는 방향에 가장 가까운 적에게 가는 것이 적합합니다.<br />
 - MaxDistance, MaxAngle:
   <br />
   접근 가능한 최대 거리와 최대 각도이다.
