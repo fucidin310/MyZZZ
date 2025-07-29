@@ -165,15 +165,16 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
   예를 들어 100m 앞에 있고 카메라 방향과 45도 떨어진 적과, 200m 앞에 있고 카메라 방향과 10도 떨어진 적 중 어떤 적이 접근하기 가장 적합한 타겟인지 정해야 할 때,<br />
   거리를 더 중요 시 할지 각도를 더 중요시 할지 가중치의 비율을 조절할 수 있습니다.<br />
   예를 들어 나는 거리와 상관없이 카메라 방향과 가장 일치하는 적에게 접근하겠다고 하면 거리 가중치를 0으로 두면 됩니다.<br />
-  이는 스킬마다 다 다를 수 있습니다.<br />
+  이는 스킬마다 다를 수 있습니다.<br />
   예를 들어 일반 근접 공격의 경우 각도보다는 가까운 적에게 가는 것이 적합하지만,<br />
   바라보는 적에게 순간이동하는 스킬의 경우 거리보다는 바라보는 방향에 가장 가까운 적에게 가는 것이 적합합니다.<br />
+  또, 역으로 거리 가중치를 음수로 바꾸면 멀리있는 적에게 접근하는 스킬을 만들 수도 있습니다.<br />
 - MaxDistance, MaxAngle  
-  접근 가능한 최대 거리와 최대 각도입니다.<br />  
+  접근 가능한 최대 거리와 최대 각도입니다.<br />
   위 이미지의 경우 거리가 10m, 각도는 30도 이내의 적만 인식합니다.<br />
-- Approch Diatance, ShouldMoveBack:
+- Approch Diatance, ShouldMoveBack  
   얼마나 접근할지, 타겟의 뒤로 이동할지 정하는 값입니다.<br />
-- TargetLocationName, TargetRotaionName:  
+- TargetLocationName, TargetRotaionName  
   모션워핑의 WarpTargetName입니다.<br />
 
 아래 함수에 위에서 만든 구조체를 넘겨 실행하면 모션 워핑이 적용됩니다.<br />
@@ -242,16 +243,16 @@ void UMyFunctionLibrary::ApprochBestTarget(const UObject* WorldContextObject, AA
 
 - Title: 말그대로 퀘스트의 타이틀
 - QuestStage: 퀘스트의 진행 단계
-  - QuestStageStartGameEffectList, QuestStageClearGameEffectList: 각각 QuestStage를 시작할때와 성공할때 적용할 GameEffectList, 사실 하나만 있어도 되지만 햇갈려서 둘다 만들었다. GameEffectList는 아래서 따로 설명
-  - QuestObjectives: 퀘스트의 세부 목표, 예를 들면 NPC A에게 돈 주기라는 QuestStage가 있으면 특정 액수만큼 돈 보유와 NPC A와 대화하기가 QuestObjectives인 식, 현재는 특정 NPC와 대화하기, 특정 몬스터 잡기가 구현됨
-- Rewards: 퀘스트 클리어 시 보상, 꼭 퀘스트가 아니더라도 던전 클리어나 보물 상자를 통해서도 얻을 수 있도록 따로 클래스로 뺐다.
+  - QuestStageStartGameEffectList, QuestStageClearGameEffectList: 각각의 QuestStage를 시작할때와 성공할때 적용할 GameEffectList, 사실 하나만 있어도 되지만 햇갈려서 둘다 만들었습니다. GameEffectList는 아래서 따로 설명
+  - QuestObjectives: 퀘스트의 세부 목표, 예를 들면 NPC A에게 돈 건내기라는 QuestStage가 있으면 특정 액수만큼 돈 보유와 NPC A와 대화하기가 QuestObjectives인 식입니다. 현재는 특정 NPC와 대화하기, 특정 몬스터 잡기가 구현되있습니다.
+- Rewards: 퀘스트 클리어 시 보상, 꼭 퀘스트가 아니더라도 던전 클리어나 보물 상자를 통해서도 얻을 수 있도록 따로 클래스로 뺐습니다.
   - Common Reward: 특정 아이템을 특정 수량만큼 획득
   - Handle GameEffect: 특정 GameEffect를 활성화 혹은 비활성화
   - Reward Random Amount: 특정 아이템을 랜덤한 수량만큼 획득
   - Reward Random Choice: 정해진 아이템 풀에서 특정 수량만큼 랜덤 획득
 
 <br />
-위처럼 만든 퀘스트 에셋을 PlayerState에 있는 QuestComponent의 함수 AddQuest에 추가하면 Quest를 추가할 수 있다. 보통 대화를 통해 추가한다.
+위처럼 만든 퀘스트 에셋을 PlayerState에 있는 QuestComponent의 함수 AddQuest에 추가하면 Quest를 추가할 수 있습니다. 보통 대화를 통해 추가합니다.
 
 <details>
 <summary>AddQuest</summary>
@@ -270,34 +271,36 @@ void UMyQuestComponent::AddQuest(TSubclassOf<UQuest> NewQuest)
 
 </details>
 
-Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 저장해 같은 Quest가 중복으로 저장되지 않도록 했다.
+Quest를 TMap에 TSubclassOf<UQuest>를 키, UQuest 인스턴스를 벨류로 저장해 같은 Quest가 중복으로 저장되지 않도록 했습니다.
 <br />
 <br />
 ### GameEffect
 <br />
-퀘스트A를 진행할 경우 원래 마을에 있던 NPC가 농장으로 이동한다고 하자.<br />
-그 때, 퀘스트A를 취소할 경우 다시 농장에 있는 NPC가 마을로 이동해야한다.<br />
-그렇기에 활성화/비활성화 시 작동/원상복구 되는 효과가 필요하다고 생각했다.<br />
+퀘스트A를 진행할 경우 원래 마을에 있던 NPC가 농장으로 이동한다고 합시다.<br />
+이 때, 퀘스트A를 취소할 경우 다시 농장에 있는 NPC가 마을로 이동해야 합니다.<br />
+그렇기에 활성화/비활성화 시 작동/원상복구 되는 효과가 필요하다고 생각했습니다.<br />
 <br />
 GameEffect에는 ActivateGameEffect/DeactivateGameEffect 라는 함수가 있다.<br />
 여기에 작동/원상복구를 각각 구현한다.<br />
-그리고 커스텀한 GameEffect를 GameState에 있는 GameEffectSystemComponent의 ApplyGameEffect/RemoveGameEffect를 통해 활성화/비활성화 시킨다.<br /><br />
+그리고 커스텀한 GameEffect를 GameState에 있는 GameEffectSystemComponent의 ApplyGameEffect/RemoveGameEffect를 통해 활성화/비활성화 시킵니다.<br /><br />
 <img width="481" height="282" alt="Image" src="https://github.com/user-attachments/assets/c8eb74d5-4cb2-4c2a-91bd-a3913639c142" /><br /><br />
 
-- Components: GameEffect에 적용할 효과, GameplayEffect를 참고해서 만들었다.<br />
-  - Handle DialogueMode: DialogueMode를 추가하거나 제거하는 효과, 어떤 레벨의 어떤 NPC에게 어떤 DialogueMode를 추가/제거 할지 정할 수 있다.<br />
-  - Toggle Visibly: 특정 NPC를 Visible/Hidden 상태로 변경하는 효과, 어떤 레벨의 어떤 NPC에게 적용할지 정할 수 있다.<br />
+- GameEffectDurationType: 현재 사용되지 않는 옵션
+- Components: GameEffect에 적용할 효과<br />
+  - Handle DialogueMode: DialogueMode를 추가하거나 제거하는 효과, 어떤 레벨의 어떤 NPC에게 어떤 DialogueMode를 추가/제거 할지 정할 수 있습니다.<br />
+  - Toggle Visibly: 특정 NPC를 Visible/Hidden 상태로 변경하는 효과, 어떤 레벨의 어떤 NPC에게 적용할지 정할 수 있습니다.<br />
   
 <br />
-이는 퀘스트에서만 사용하는 건 아니다.<br />
-예를 들면 이 게임에서는 게임에 처음 접속하면 처음 만나는 촌장 NPC를 제외한 다른 NPC를 Hidden 상태로 바꿔야 한다.<br />
+이는 퀘스트에서만 사용하는 건 아닙니다.<br />
+예를 들면 이 게임에서는 게임에 처음 접속하면 처음 만나는 촌장 NPC를 제외한 다른 NPC를 Hidden 상태로 바꿔야 합니다.<br />
 이를 위해 기본상태인 다른 NPC는 Visible, 처음만나는 촌장 NPC는 Hidden인 상태에서<br />
 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바꾸는 GameEffect를 만들고,<br />
-InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣는다.<br /><br />
+InitGameEffectDataAssets에 넣고, 그걸 MyGameInstance의 변수에 넣습니다.<br /><br />
 <img width="573" height="202" alt="Image" src="https://github.com/user-attachments/assets/9faaa4b5-1639-475d-85de-88d62d157f13" /><br /><br />
-그럼 마지막으로 플레이한 버전이 InitGameEffectDataAssets의 버전보다 낮으면 해당 GameEffect를 적용한다. 물론 이것도 비활성화 할 수 있다.<br />
-이렇게 하면 처음 0.0.0.1 버전 혹은 더 높은 버전을 플레이할 경우 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바뀌게 되고,<br />
-퀘스트를 진행하면서 점점 GameEffect를 비활성화 하다보면, 만날 수 있는 NPC가 생기게 된다.<br />
+그럼 마지막으로 플레이한 버전이 InitGameEffectDataAssets의 버전보다 낮으면 해당 GameEffect를 적용합니다. 물론 이것도 비활성화 할 수 있습니다.<br />
+이렇게 하면 처음 0.0.0.1 버전 혹은 더 높은 버전을 플레이할 경우, 즉, 0.0.0.1 버전을 처음 플레이할 경우, 다른 NPC는 Hidden, 처음 만나는 촌장은 Visible로 바뀌게 되고,<br />
+퀘스트를 진행하면서 점점 GameEffect를 비활성화 하다보면, 만날 수 있는 NPC가 생기게 됩니다.<br />
+실제 게임에서 첫 퀘스트를 클리어하지 않고, 마을에 NPC를 찾을 수 없고, 첫 퀘스트를 클리어하면 마을에 NPC가 보이게 됩니다.
 <br />
 <br />
 
@@ -311,7 +314,7 @@ DialogueAsset을 만들고 그걸 NPC의 DialogueComponent에 적용시킨 후 �
 <img width="716" height="439" alt="Image" src="https://github.com/user-attachments/assets/f46a1b0f-1f77-4bea-99f2-f427fb266dda" /><br /><br />
 위에서처럼 만든 CustomGraph를 통해 만든 DialogueAsset을 아래처럼 DialogueComponent를 가진 NPCCharacter에 넣어주면
 <br />
-NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interact함수에서 해당하는 Dialogue를 재생한다.
+NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interact함수에서 해당하는 Dialogue를 재생합니다.
 <br />
 <img width="675" height="175" alt="Image" src="https://github.com/user-attachments/assets/b59545a4-428e-4d4b-b672-6dcedee16a45" />
 <br />
@@ -320,7 +323,7 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 - DialogueEffect: 대화가 종료될때 적용할 효과(예: 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등)
 <br />
 <br />
-위 사진에서는 DialogueMode가 1001일 때, DA_AllanStory_First를 재생하고, 대화가 끝나면 Quest_AllanStory를 추가한다.
+위 사진에서는 DialogueMode가 1001일 때, DA_AllanStory_First를 재생하고, 대화가 끝나면 Quest_AllanStory를 추가합니다.
 <br />
 <br />
 
@@ -328,10 +331,21 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 <br />
 예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때<br />
 서로 다른 퀘스트가 어떤 대화문을 재생해야하는지를 덮어쓰는 문제가 생길 수 있어서,<br />
-int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였다.<br />
-그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수 도 있지만<br />
+int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였습니다.<br />
+그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수도 있지만<br />
 예를 들어 어떤 퀘스트를 완료하기 전후나 혹은 어떤 지역에 다녀온 전후로 대화문이 바뀌는 경우처럼<br />
-꼭 퀘스트가 어떤 대화를 할지 정하는 게 아니기에 NPC 자체에서 어떤 대화문을 재생할지 정하게 구현했다.<br />
+꼭 퀘스트가 어떤 대화를 할지 정하는 게 아니기에 NPC 자체에서 어떤 대화문을 재생할지 정하게 구현했습니다.<br />
+<br />
+
+### DialogueEffect
+<br />
+원래는 GameEffect에 GameEffectDurationType을 Instance, Conditional, Infinite를 만들어서,<br />
+대화 후 퀘스트 추가 같이 적용만 되고 복구될 일이 없는 경우엔 GameEffectDurationType을 Instance으로 설정하는 식으로 커버하려고 했으나,<br />
+특정 GameEffect를 복구하기 위해서는 필요한 GameEffect를 Class 별로 만들 필요가 있었습니다(마치 GameplayEffect 처럼).<br />
+그런데 대화 후 퀘스트 추가 같은 것은 위해서 말한대로 복구할 일이 없기에 Class로 만들기보다 각 효과를 Component로 만드는게 효율적이여서<br />
+GameEffect 대신 Acitive함수만 있는 DialogueEffect를 만들었습니다.<br />
+사실 Reward에 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등을 넣고 대화의 보상이라고 하면 되지만<br />
+Reward가 너무 지저분해지는 것 같아 일단 DialogueEffect를 만들었습니다.<br />
 <br />
 
 ## 인벤토리
@@ -340,9 +354,11 @@ int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 
 <br />
 
 현재, 강화아이템, 귀중품, 성유물 인벤토리가 있고,<br />
-강화아이템, 귀중품은 TMap<UClass*, int>으로 성유물은 TArray<UItem*>으로 저장하고 있다.<br />
-성유물의 경우에는 같은 Class라도 각 인스턴스마다 부여하는 능력치가 다르기 때문에 인스턴스로 저장한다.<br />
-아이템을 인벤토리로 추가할 때는 PlayerState의 InventoryComponent의 AddItem 함수에 원하는 아이템 클래스와 수량을 넘겨 실행한다.<br />
+강화아이템, 귀중품은 TMap<UClass*, int>으로 성유물은 TArray<UItem*>으로 저장하고 있습니다.<br />
+성유물의 경우에는 같은 Class라도 각 인스턴스마다 부여하는 능력치가 다르기 때문에 인스턴스로 저장합니다.<br />
+아이템을 인벤토리로 추가할 때는 PlayerState의 InventoryComponent의 AddItem 함수에 원하는 아이템 클래스와 수량을 넘겨 실행합니다.<br />
+강화아이템과 귀중품처럼 인스턴스를 저장하지 않아도 되는 경우에는 키에 Class, 값에 수량을 저장하는 TMap으로<br />
+성유물처럼 인스턴스를 저장해야하는 경우에는 받은 Class를 이용해 인스턴스를 만들고 그걸 TArray에 저장하는 형식을 가집니다.<br />
 
 <details>
 <summary>AddItem</summary>
@@ -414,7 +430,7 @@ void UMyInventoryComponent::AddItem(TSubclassOf<UItem> NewItem, int Amount)
 </details>
 <br />
 
-성유물의 스팩은 이때 정해진다.
+성유물의 경우, 인벤토리에 저장될때 인스턴스가 생성되기에 성유물의 스팩은 이때 정해집니다.
 
 <details>
 <summary>MakeRandomBonus</summary>
@@ -498,16 +514,16 @@ void UMyFunctionLibrary::AddEquipmentBonus(FEquipmentBonusData& EquipmentBonusDa
 ![Image](https://github.com/user-attachments/assets/8c7da264-dd2a-42ec-8671-5dec3526f398)<br />
 
 ### 캐릭터 레벨업
-경험치 책을 이용해 레벨업 한다. 경험치 책은 그 종류마다 서로 다른 경험치 양을 가진다.<br />
-각 레벨당 필요한 골드와 경험치는 커브드 테이블로 저장된다.<br />
+경험치 책과 모라를 이용해 레벨업 합니다. 경험치 책은 그 종류마다 서로 다른 경험치 양을 가집니다.<br />
+각 레벨당 필요한 골드와 경험치는 커브드 테이블로 저장됩니다.<br />
 
 ### 성유물 장착
-5종류의 부위에 각각 성유물을 장착할 수 있다.<br />
+5종류의 부위에 각각 성유물을 장착할 수 있습니다.<br />
 성유물을 장착하면 그 성유물에 부여된 스탯보너스를 얻고,<br />
-같은 종유의 성유물을 2개, 4개 장착할 경우 특수한 보너스를 얻게 된다.<br />
+같은 종유의 성유물을 2개, 4개 장착할 경우 특수한 보너스를 얻게 됩니다.<br />
 <br />
-예를 들어 영상 속 검투사의 피날레의 경우 2셋은 공격력 +18%, 4셋은 일반공격시 35% 데미지 부스트를 얻게된다.<br />
-이는 장착 시 스텟 보너스와 세트 효과는 GameplayEffect로 구현한다.<br />
+예를 들어 영상 속 검투사의 피날레의 경우 2셋은 공격력 +18%, 4셋은 일반공격시 35% 데미지 부스트를 얻게됩니다.<br />
+이는 장착 시 스텟 보너스와 세트 효과는 GameplayEffect로 구현합니다.<br />
 
 <details>
 <summary>EquipArtifact</summary>
@@ -580,7 +596,7 @@ void UMyEquipmentComponent::EquipArtifact(UArtifact* InArtifact)
 </details>
 <br />
 장착 시 스텟 보너스는 SetByCaller를 이용해 스탯보너스를 주고,<br />
-세트 효과의 경우, 그 종류에 따라 조금 다른데, 일반공격 시 35% 데미지 부스트는 일반 공격 시 부여되는 테그를 Reguire Tags to Apply This Effect에 넣어서 일반공격시에만 적용되도록 하였다.<br />
+세트 효과의 경우, 그 종류에 따라 조금 다른데, 일반공격 시 35% 데미지 부스트는 일반 공격 시 부여되는 테그를 Reguire Tags to Apply This Effect에 넣어서 일반공격시에만 적용되도록 합니다.<br />
 
 ## 그 외
 ### 세이브 로드
@@ -589,8 +605,8 @@ SaveGames을 이용해 간단하게 세이브 로드를 구현했습니다.<br /
 
 ### 보물 상자
 ![Image](https://github.com/user-attachments/assets/f38ef7ec-0d30-42cc-a092-62f6be0631e4)<br />
-IInteractable 인터페이스를 이용해 상호작용 해 위에서 설명한 Reward를 통해 보상을 받도록 했다.<br />
-물론 SaveGames를 통해 이미 얻은 상자는 보이지 않도록 했다.
+IInteractable 인터페이스를 이용해 상호작용 해 위에서 설명한 Reward를 통해 보상을 받도록 했습니다.<br />
+물론 SaveGames를 통해 이미 얻은 상자는 보이지 않도록 했습니다.
 
 ### 경치 카메라
 ![Image](https://github.com/user-attachments/assets/6269f8a7-5432-49db-9243-e0cdfab01cd1)
@@ -598,5 +614,5 @@ IInteractable 인터페이스를 이용해 상호작용 해 위에서 설명한 
 ### 카메라와 겹칠 시 반투명화
 ![Image](https://github.com/user-attachments/assets/a560dd2f-de7f-4c53-93d9-4d440926798b)<br />
 카메라부터 대상까지 벡터와 카메라부터 캐릭터까지 벡터의 내적을 이용해해 그 값을 디더링해서 반투명화.<br />
-몬스터나 건물에 적용해 캐릭터가 가려지지 않도록 했다.<br />
+몬스터나 건물에 적용해 캐릭터가 가려지지 않도록 했습니다.<br />
 <img width="1484" height="533" alt="Image" src="https://github.com/user-attachments/assets/73a0033b-dce6-4748-b4f7-8df419eaa552" /><br />
