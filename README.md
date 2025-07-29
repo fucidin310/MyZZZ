@@ -55,10 +55,10 @@ Countess, Phase, Aurora의 스킬을 설명한 영상
 SkillEffectDatas를 수정해 데미지 계산에 필요한 정보를 구성합니다.
 <br />
 <br />
-예를 들어 **방어도 50% + 공격력 70%** 만큼의 데미지를 주는 스킬이 있다고 합시다.<br />
+예를 들어 **방어도 50% + 공격력 70%** 만큼의 데미지를 주는 스킬이 있다고 합시다.<br /><br />
 이 경우, Stat Modifiers를 2개를 생성합니다:<br />
 - 첫번째, Attribute에는 DefancePower, Multi Handle에는 0.5를 넣어줍니다.<br />
-- 두번째, Attribute에는 AttackPower, Multi Handle에는 0.7를 넣어줍니다.<br />
+- 두번째, Attribute에는 AttackPower, Multi Handle에는 0.7를 넣어줍니다.<br /><br />
 데미지 배율의 경우에는 스킬에 레벨에 따라 변화하기 때문에 Curve Table을 넣도록 했습니다. 데미지를 계산할 때 스킬의 레벨에 맞는 배율을 가져옵니다.
 <br />
 <br />
