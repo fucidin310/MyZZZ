@@ -329,7 +329,7 @@ NPC 근처에서 플레이어가 상호작용을 하면 NPC에 구현된 Interac
 
 ### DialogueMode
 <br />
-예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 다른 대화문을 재생한다고 할 때<br />
+예를 들어 어떤 NPC가 평소, 퀘스트 A를 진행할 때, 퀘스트 B를 진행할 때 각기 다른 대화문을 재생한다고 할 때<br />
 서로 다른 퀘스트가 어떤 대화문을 재생해야하는지를 덮어쓰는 문제가 생길 수 있어서,<br />
 int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 재생하게 하였습니다.<br />
 그럼 퀘스트에서 어떤 Dialogue를 재생하게 할건지 정하면 되지 않나 할 수도 있지만<br />
@@ -339,10 +339,10 @@ int형 배열을 만들어 저장하고 가장 높은 숫자의 DialogueMode를 
 
 ### DialogueEffect
 <br />
-원래는 GameEffect에 GameEffectDurationType을 Instance, Conditional, Infinite를 만들어서,<br />
-대화 후 퀘스트 추가 같이 적용만 되고 복구될 일이 없는 경우엔 GameEffectDurationType을 Instance으로 설정하는 식으로 커버하려고 했으나,<br />
-특정 GameEffect를 복구하기 위해서는 필요한 GameEffect를 Class 별로 만들 필요가 있었습니다(마치 GameplayEffect 처럼).<br />
-그런데 대화 후 퀘스트 추가 같은 것은 위해서 말한대로 복구할 일이 없기에 Class로 만들기보다 각 효과를 Component로 만드는게 효율적이여서<br />
+원래는 GameEffect에 GameEffectDurationType을 Instance, Conditional, Infinite로 구분해서,<br />
+예를 들어 '대화 후 퀘스트 추가'같이 적용만 되고 복구될 일이 없는 경우 GameEffectDurationType을 Instance으로 설정하는 식으로 커버하려고 했습니다.<br />
+그러나 특정 GameEffect를 복구하기 위해서는 필요한 GameEffect를 Class 별로 만들 필요가 있었습니다.<br />
+그런데 위에서 말한 복구할 일이 없는 효과의 경우, Class로 만들기보다 각 효과를 Component로 만드는게 효율적이여서<br />
 GameEffect 대신 Acitive함수만 있는 DialogueEffect를 만들었습니다.<br />
 사실 Reward에 퀘스트 추가, DialogueMode 추가 및 삭제, 퀘스트 이벤트 보내기 등을 넣고 대화의 보상이라고 하면 되지만<br />
 Reward가 너무 지저분해지는 것 같아 일단 DialogueEffect를 만들었습니다.<br />
